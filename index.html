@@ -1,0 +1,210 @@
+import pandas as pd
+import plotly.graph_objects as go
+
+# Load the CSV file
+file_path = "Percentile.csv"  # Update the path if necessary
+df = pd.read_csv(file_path)
+
+# Trim column names to remove any accidental spaces
+df.columns = df.columns.str.strip()
+
+# Print column names to check if "2024" exists
+print(df.columns)
+
+# Convert 'Date' column to datetime format
+df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+
+# Convert "2024" column to numeric (force errors to NaN)
+if '2024' in df.columns:
+    df['2024'] = pd.to_numeric(df['2024'], errors='coerce')
+
+# Ensure 0th Percentile exists
+df['0th Percentile'] = 0.0
+
+# Define percentile ranges, colors, and labels
+percentiles = [
+    ('0th Percentile', '10th Percentile', 'rgba(191, 61, 109, 0.8)', '0-10th Percentile'),   # red
+    ('10th Percentile', '30th Percentile', 'rgba(218, 154, 87, 0.8)', '10-30th Percentile'), # orange
+    ('30th Percentile', '70th Percentile', 'rgba(255, 255, 0, 0.3)', '30-70th Percentile'), # Yellow
+    ('70th Percentile', '90th Percentile', 'rgba(108, 218, 87, 0.8)', '70-90th Percentile'), # Green
+    ('90th Percentile', '100th Percentile', 'rgba(87, 218, 184, 0.8)', '90-100th Percentile')  # Blue
+]
+
+# Create the figure
+fig = go.Figure()
+
+# Add shaded percentile regions
+for lower, upper, color, label in percentiles:
+    if lower in df.columns and upper in df.columns:
+        fig.add_trace(go.Scatter(
+            x=df['Date'].tolist() + df['Date'].tolist()[::-1],
+            y=df[upper].tolist() + df[lower].tolist()[::-1],
+            fill='toself',
+            fillcolor=color,
+            line=dict(color='rgba(255,255,255,0)'),
+            name=label,  
+            hoverinfo="skip",  
+            showlegend=True
+        ))
+
+# Add the 2024 line (if the column exists and has numeric values)
+if '2024' in df.columns and df['2024'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['2024'],
+        mode='lines',
+        name='2024',
+        line=dict(color='black', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br>2024 Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['2024'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+if 'Median' in df.columns and df['Median'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['Median'],
+        mode='lines',
+        name='Median',
+        line=dict(color='green', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br>Median Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['Median'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+    
+if '2023' in df.columns and df['2023'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['2023'],
+        mode='lines',
+        name='2023',
+        line=dict(color='rgba(209, 135, 51, 0.8)', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br> 2023 Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['2023'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+   
+if '2024' in df.columns and df['2022'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['2022'],
+        mode='lines',
+        name='2022',
+        line=dict(color='rgba(10, 37, 83, 0.3)', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br> 2022 Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['2022'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+    
+if '2024' in df.columns and df['2021'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['2021'],
+        mode='lines',
+        name='2021',
+        line=dict(color='rgba(69, 209, 51, 0.8)', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br> 2021 Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['2021'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+
+if '2024' in df.columns and df['2020'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['2020'],
+        mode='lines',
+        name='2020',
+        line=dict(color='rgba(178, 51, 209, 0.8)', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br> 2020 Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['2020'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+
+if '2024' in df.columns and df['2019'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['2019'],
+        mode='lines',
+        name='2019',
+        line=dict(color='rgba(209, 51, 152, 0.8)', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br> 2019 Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['2019'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+
+if '2024' in df.columns and df['2018'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['2018'],
+        mode='lines',
+        name='2018',
+        line=dict(color='rgba(51, 185, 209, 0.8)', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br> 2018 Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['2018'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+
+if '2024' in df.columns and df['2017'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['2017'],
+        mode='lines',
+        name='2017',
+        line=dict(color='rgba(201, 209, 51, 0.8)', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br> 2017 Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['2017'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+
+if '2024' in df.columns and df['2016'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['2016'],
+        mode='lines',
+        name='2016',
+        line=dict(color='rgba(125, 128, 84, 0.8)', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br> 2016 Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['2016'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+      
+if '2015' in df.columns and df['2015'].notna().sum() > 0:
+    fig.add_trace(go.Scatter(
+        x=df['Date'],
+        y=df['2015'],
+        mode='lines',
+        name='2015',
+        line=dict(color='rgba(0, 0, 150, 0.3)', width=3, dash='solid'),  # Black, bold line
+        hoverinfo="text",  # Enables custom hover text
+        text=[f"Date: {d.strftime('%b %d')}<br> 2015 Recharge AF: {v:.2f}" for d, v in zip(df['Date'], df['2015'])]  # Custom hover text
+    ))
+else:
+    print("Warning: '2024' column not found or has no valid numeric data!")
+
+# Update layout
+fig.update_layout(
+    title="Recharge",
+    xaxis_title="Month",
+    yaxis_title="Recharge AF",
+    xaxis=dict(
+        tickformat="%b",  # Show only month names (Jan, Feb, etc.)
+        dtick="M1",  # One tick per month
+        showgrid=False
+    ),
+    yaxis=dict(showgrid=True),
+    template="plotly_white",
+    legend=dict(title="Percentile Ranges & 2024 Line")
+)
+
+# Show the plot
+fig.show()
+fig.write_html("RechargePercentilesv2.html")
