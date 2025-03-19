@@ -1,0 +1,63 @@
+from dash import Dash, dcc, html, Input, Output
+import pandas as pd
+import plotly.express as px
+import ipywidgets as widgets
+from IPython.display import display
+
+# Load and process data (assuming this part is already done)
+df = pd.read_csv('Trial.csv')
+df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+df = df.dropna(subset=['Result', 'Site', 'Compound'])
+
+# Create Dropdown Widgets
+style = {'description_width': 'initial'}
+layout = widgets.Layout(width='50%')
+
+site_dropdown = widgets.Dropdown(
+    description='Site:',
+    options=sorted(df['Site'].unique().tolist()),
+    value=df['Site'].unique()[0],
+    style=style,
+    layout=layout
+)
+
+compound_dropdown = widgets.Dropdown(
+    description='Compound:',
+    options=sorted(df['Compound'].unique().tolist()),
+    value=df['Compound'].unique()[0],
+    style=style,
+    layout=layout
+)
+
+import plotly.io as pio
+
+def update_plot(site, compound):
+    filtered_df = df[(df['Site'] == site) & (df['Compound'] == compound)]
+    
+    if filtered_df.empty:
+        print(f"No data available for {compound} at {site}.")
+        return
+    
+    fig = px.scatter(
+        filtered_df,
+        x='Date',
+        y='Result',
+        color='Source',
+        title=f'Results for {compound} at {site}',
+        labels={'Result': 'Concentration', 'Date': 'Date'},
+        template='plotly_white'
+    )
+    
+    fig.update_layout(
+        hovermode='x unified',
+        showlegend=True,
+        legend_title_text='Source',
+        height=600
+    )
+    
+  
+    
+    fig.show()
+# Create and display interactive plot (CORRECTED VERSION)
+interactive_plot = widgets.interactive(update_plot, site=site_dropdown, compound=compound_dropdown)
+display(interactive_plot)  # Only display the interactive_plot
